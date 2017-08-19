@@ -113,7 +113,7 @@ Japin Li
  
  1. **Brace expansion** - Brace expansion is a mechanism by which arbitray strings may be generated. The form of patterns to be barac-expansion is an optional *PREAMBLE*, followed by a series of comman-separated strings between a pair of braces, followed by an optional *POSTSCRIPT*. The *PREAMBLE* is prefixed to each string contained within the braces, and the *POSTSCRIPT* is then appended to each resulting string, expanding left to right. Brace expansions may be nested. 
     Brace expansion is performed before any other expansions, and any characters special to other expansions are preserved in the result. To avoid conflicts with parameter expansion, the string "${" is not considered eligible for brace expansion.
- 2. **Tilde expansion** - If a word begins with an unquoted tilde character ("~"), all of the characters up to the first unquoted slash (or all characters, if there is no unquoted slash) are considered a *tilde-prefix*. 
+ 2. **Tilde expansion** - If a word begins with an unquoted tilde character ("\~"), all of the characters up to the first unquoted slash (or all characters, if there is no unquoted slash) are considered a *tilde-prefix*. 
     If the tilde-prefix is "\~+", the value of the shell variable *PWD* replaces the tilde-prefix. If the tilde-prefix is "\~-", the value of shell variable *OLDPWD*, if it is set, is substituted.
 3. **Shell parameter and variable expansion** - The "$" character introduces parameter expansion, command substitution, or arithmetic expansion. The parameter name or symbol to be expanded may be enclosed in braces, which are optional but serve to protect the variable to be expanded from characters immediately following it which could be interpreted as part of the name.
    The basic form of parameter expansion is "${PARAMETER}". The value of "PARAMETER" is substituted. The braces are required when "PARAMETER" is a positional parameter with more than one digit, or when "PARAMETER" is followed by a character that is not to be interpreted as part of its name. If the first character of "PARAMETER" is an exclamation point ("!"), Bash uses the value of the variable formed from the rest of "PARAMETER" as the name of the variable; this variable is then expanede and the value is used in the rest of the substitution, rather the value of "PARAMETER" itself. This is known as *indirect expansion*. For example,
@@ -130,3 +130,61 @@ Japin Li
    ${VAR:=value}
    ```
    However, special parameters, among others the positional parameters, may not be assigned this way.
+4. **Command substitution** - Command substitution allows the output of a command to replace the command itself. Command substitution occurs when a command is enclosed like this:
+   ```
+   $(command)
+   ```
+   or like this using backticks:
+   ```
+   `command`
+   ```
+   Bash performs the expansion by executing COMMAND and replacing the command substitution with the standard output of the command, with any trailing newlines deleted.
+   Command substitutions may be nested. To nest when using the backquoted form, escape the inner backticks with backslashes.
+   *If the subsitution appears within double quotes, word splitting and file name expansion are not performed on the results. (What?)*
+5. **Arithmetic expansion** - Arithmetic expansion allows the evaluation of an arithmetic expression and the substitution of the result. The format for arithmetic expression is:
+   ```
+   $((EXPRESSION))
+   ```
+   The expression is treated as if it were within double quotes, but a double quote inside the parentheses is not treated specially. All tokens in the expression undergo parameter expansion, command substitution, and quote removal. Arithmetic substitutions may be nested.
+   Evaluation of arithmetic expression is done in fixed-width integers with no check for overflow - although division by zero is trapped and recognized as an error. The operators are roughly the same as in the C programming language. In order of decreasing precedence, the list looks like this:
+    Operator            | Meaning
+   :--------------------|:---------------
+    VAR++ and VAR--     | variable post-increment and post-decrement
+	++VAR and --VAR     | variable pre-increment and pre-decrement
+	- and +             | unary minus and plus
+	! and ~             | logical and bitwise negation
+	**                  | exponentiation
+	*, / and %          | multiplication, division, and remainder
+	+ and -             | addition, subtraction
+	<< and >>           | left and right bitwise shifts
+	<=, >=, < and >     | comparison operators
+	== and !=           | equality and inequality
+	&                   | bitwise AND
+	^                   | bitwise exclusive OR
+	|                   | bitwise OR
+	&&                  | logical AND
+	||                  | logical OR
+	expr ? expr : expr  | conditional evaluation
+	=, *=, /=, %=, +=, -=, <<=, >>=, &=, ^= and |= | assignments
+	,                   | separator between expression
+	
+   Constans with a leading 0 (zero) are interpreted as octal numbers. A leading "0x" or "0X" denotes hexadecimal.
+   Wherever possible, Bash users should try to use the syntax with square brackets:
+   ```
+   $[EXPRESSION]
+   ```
+   However, this will only calculate the result *EXPRESSION*, and do no tests.
+6. **Process substitution** - Process substitution is supported on systems that support named pipes (FIFOs) or the */dev/fd* method of naming open files. It takes the form of
+   ```
+   <(LIST)
+   ```
+   or
+   ```
+   >(LIST)
+   ```
+   The process *LIST* is run its input or output connected to a FIFO or some file in */dev/fd*. If the ">(LIST)" form is used, writing to the file will provide input for *LIST*. If the "<(LIST)* form is used, the file passed as an argument should be read to obtain the output of *LIST*. *Note that no space may appear between the < or > signs and the left parenthesis, otherwise the construct would be interpreted as a redirection.
+   When available, process substitution is performed simultaneously with parameter and variable expansion, command substitution, and arithmetic expansion.
+7. **Word splitting** - The shell scans the results of parameter expansion, command substitution, and arithmetic expansion that did not occur within double quotes for word splitting.
+   The shell treats each character of $IFS as a delimiter, and splits the results of the other expansions into words on these characters.
+
+8. **File name expansion** - After word splitting, unless the *-f* option has been set, Bash scans each word for characters "*", "?", and "[". If one of these characters appears, then the word is regarded as a *PATTERN*, and replaced with an alphabetically sorted list of file names matching the pattern.
