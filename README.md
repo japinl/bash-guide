@@ -152,11 +152,11 @@ Japin Li
    :--------------------|:---------------
     VAR++ and VAR--     | variable post-increment and post-decrement
 	++VAR and --VAR     | variable pre-increment and pre-decrement
-	- and +             | unary minus and plus
+	\- and +            | unary minus and plus
 	! and ~             | logical and bitwise negation
-	**                  | exponentiation
-	*, / and %          | multiplication, division, and remainder
-	+ and -             | addition, subtraction
+	\*\*                | exponentiation
+	\*, / and %         | multiplication, division, and remainder
+	\+ and -            | addition, subtraction
 	<< and >>           | left and right bitwise shifts
 	<=, >=, < and >     | comparison operators
 	== and !=           | equality and inequality
