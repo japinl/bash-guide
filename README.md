@@ -147,6 +147,7 @@ Japin Li
    ```
    The expression is treated as if it were within double quotes, but a double quote inside the parentheses is not treated specially. All tokens in the expression undergo parameter expansion, command substitution, and quote removal. Arithmetic substitutions may be nested.
    Evaluation of arithmetic expression is done in fixed-width integers with no check for overflow - although division by zero is trapped and recognized as an error. The operators are roughly the same as in the C programming language. In order of decreasing precedence, the list looks like this:
+   
     Operator            | Meaning
    :--------------------|:---------------
     VAR++ and VAR--     | variable post-increment and post-decrement
