@@ -162,9 +162,9 @@ Japin Li
 	== and !=           | equality and inequality
 	&                   | bitwise AND
 	^                   | bitwise exclusive OR
-	|                   | bitwise OR
+	\|                  | bitwise OR
 	&&                  | logical AND
-	||                  | logical OR
+	\|\|                | logical OR
 	expr ? expr : expr  | conditional evaluation
 	=, *=, /=, %=, +=, -=, <<=, >>=, &=, ^= and |= | assignments
 	,                   | separator between expression
