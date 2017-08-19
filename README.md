@@ -101,3 +101,32 @@ Japin Li
  $!        | Expands to the process ID of the most recently executed background (asynchronous) command.
  $0        | Expands to the name of the shell or shell script.
  $_        | The underscore variable is set at shell startup and contains the absolute file name of the shell or script being executed as passed in the argument list. Subsequently, it expands to the last argument to the previous command, after expansion. It is also set to the full pathname of each command executed and placed in the environment exported to that command. When checking mail, this parameter holds the name of the mail file.
+
+### Quotes
+
+ Type               | Brief
+:-------------------|:---------
+ Single quotes ('') | Used to preserve the literal value of each character enclosed within the quotes. A single quote may not occur between single quotes, even when preceded by a backslash.
+ Double quotes ("") | Used to preserve the literal value of all characters, except for the dollar sign, the backticks (backward single quotes, ``) and the backslash. The dollar sign and the backticks retain their special meaning within the double quotes. The backslash retains its meaning only when followed by dollor, backtick, double quote, backslash or newline.
+ 
+ ### Shell expansion
+ 
+ 1. **Brace expansion** - Brace expansion is a mechanism by which arbitray strings may be generated. The form of patterns to be barac-expansion is an optional *PREAMBLE*, followed by a series of comman-separated strings between a pair of braces, followed by an optional *POSTSCRIPT*. The *PREAMBLE* is prefixed to each string contained within the braces, and the *POSTSCRIPT* is then appended to each resulting string, expanding left to right. Brace expansions may be nested. 
+    Brace expansion is performed before any other expansions, and any characters special to other expansions are preserved in the result. To avoid conflicts with parameter expansion, the string "${" is not considered eligible for brace expansion.
+ 2. **Tilde expansion** - If a word begins with an unquoted tilde character ("~"), all of the characters up to the first unquoted slash (or all characters, if there is no unquoted slash) are considered a *tilde-prefix*. 
+    If the tilde-prefix is "~+", the value of the shell variable *PWD* replaces the tilde-prefix. If the tilde-prefix is "~-", the value of shell variable *OLDPWD*, if it is set, is substituted.
+3. **Shell parameter and variable expansion** - The "$" character introduces parameter expansion, command substitution, or arithmetic expansion. The parameter name or symbol to be expanded may be enclosed in braces, which are optional but serve to protect the variable to be expanded from characters immediately following it which could be interpreted as part of the name.
+   The basic form of parameter expansion is "${PARAMETER}". The value of "PARAMETER" is substituted. The braces are required when "PARAMETER" is a positional parameter with more than one digit, or when "PARAMETER" is followed by a character that is not to be interpreted as part of its name. If the first character of "PARAMETER" is an exclamation point ("!"), Bash uses the value of the variable formed from the rest of "PARAMETER" as the name of the variable; this variable is then expanede and the value is used in the rest of the substitution, rather the value of "PARAMETER" itself. This is known as *indirect expansion*. For example,
+   ```
+   japin@localhost:~/bash-guide$ hello=world
+   japin@localhost:~/bash-guide$ hi=hello
+   japin@localhost:~/bash-guide$ echo ${hi}
+   hello
+   japin@localhost:~/bash-guide$ echo ${!hi}
+   world
+   ```
+   The following construct allows for creation of the named variable if it does not yet exist:
+   ```
+   ${VAR:=value}
+   ```
+   However, special parameters, among others the positional parameters, may not be assigned this way.
