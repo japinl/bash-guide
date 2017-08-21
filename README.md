@@ -166,7 +166,7 @@ Japin Li
 	&&                  | logical AND
 	\|\|                | logical OR
 	expr ? expr : expr  | conditional evaluation
-	=, *=, /=, %=, +=, -=, <<=, >>=, &=, ^= and |= | assignments
+	=, \*=, /=, %=, +=, -=, <<=, >>=, &=, ^= and \|= | assignments
 	,                   | separator between expression
 	
    Constans with a leading 0 (zero) are interpreted as octal numbers. A leading "0x" or "0X" denotes hexadecimal.
