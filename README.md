@@ -108,12 +108,12 @@ Japin Li
 :-------------------|:---------
  Single quotes ('') | Used to preserve the literal value of each character enclosed within the quotes. A single quote may not occur between single quotes, even when preceded by a backslash.
  Double quotes ("") | Used to preserve the literal value of all characters, except for the dollar sign, the backticks (backward single quotes, ``) and the backslash. The dollar sign and the backticks retain their special meaning within the double quotes. The backslash retains its meaning only when followed by dollor, backtick, double quote, backslash or newline.
- 
+
  ### Shell expansion
- 
- 1. **Brace expansion** - Brace expansion is a mechanism by which arbitray strings may be generated. The form of patterns to be barac-expansion is an optional *PREAMBLE*, followed by a series of comman-separated strings between a pair of braces, followed by an optional *POSTSCRIPT*. The *PREAMBLE* is prefixed to each string contained within the braces, and the *POSTSCRIPT* is then appended to each resulting string, expanding left to right. Brace expansions may be nested. 
+
+ 1. **Brace expansion** - Brace expansion is a mechanism by which arbitray strings may be generated. The form of patterns to be barac-expansion is an optional *PREAMBLE*, followed by a series of comman-separated strings between a pair of braces, followed by an optional *POSTSCRIPT*. The *PREAMBLE* is prefixed to each string contained within the braces, and the *POSTSCRIPT* is then appended to each resulting string, expanding left to right. Brace expansions may be nested.
     Brace expansion is performed before any other expansions, and any characters special to other expansions are preserved in the result. To avoid conflicts with parameter expansion, the string "${" is not considered eligible for brace expansion.
- 2. **Tilde expansion** - If a word begins with an unquoted tilde character ("\~"), all of the characters up to the first unquoted slash (or all characters, if there is no unquoted slash) are considered a *tilde-prefix*. 
+ 2. **Tilde expansion** - If a word begins with an unquoted tilde character ("\~"), all of the characters up to the first unquoted slash (or all characters, if there is no unquoted slash) are considered a *tilde-prefix*.
     If the tilde-prefix is "\~+", the value of the shell variable *PWD* replaces the tilde-prefix. If the tilde-prefix is "\~-", the value of shell variable *OLDPWD*, if it is set, is substituted.
 3. **Shell parameter and variable expansion** - The "$" character introduces parameter expansion, command substitution, or arithmetic expansion. The parameter name or symbol to be expanded may be enclosed in braces, which are optional but serve to protect the variable to be expanded from characters immediately following it which could be interpreted as part of the name.
    The basic form of parameter expansion is "${PARAMETER}". The value of "PARAMETER" is substituted. The braces are required when "PARAMETER" is a positional parameter with more than one digit, or when "PARAMETER" is followed by a character that is not to be interpreted as part of its name. If the first character of "PARAMETER" is an exclamation point ("!"), Bash uses the value of the variable formed from the rest of "PARAMETER" as the name of the variable; this variable is then expanede and the value is used in the rest of the substitution, rather the value of "PARAMETER" itself. This is known as *indirect expansion*. For example,
@@ -147,7 +147,7 @@ Japin Li
    ```
    The expression is treated as if it were within double quotes, but a double quote inside the parentheses is not treated specially. All tokens in the expression undergo parameter expansion, command substitution, and quote removal. Arithmetic substitutions may be nested.
    Evaluation of arithmetic expression is done in fixed-width integers with no check for overflow - although division by zero is trapped and recognized as an error. The operators are roughly the same as in the C programming language. In order of decreasing precedence, the list looks like this:
-   
+
     Operator            | Meaning
    :--------------------|:---------------
     VAR++ and VAR--     | variable post-increment and post-decrement
@@ -168,7 +168,7 @@ Japin Li
 	expr ? expr : expr  | conditional evaluation
 	=, *=, /=, %=, +=, -=, <<=, >>=, &=, ^= and |= | assignments
 	,                   | separator between expression
-	
+
    Constans with a leading 0 (zero) are interpreted as octal numbers. A leading "0x" or "0X" denotes hexadecimal.
    Wherever possible, Bash users should try to use the syntax with square brackets:
    ```
@@ -189,3 +189,42 @@ Japin Li
    The shell treats each character of $IFS as a delimiter, and splits the results of the other expansions into words on these characters.
 
 8. **File name expansion** - After word splitting, unless the *-f* option has been set, Bash scans each word for characters "*", "?", and "[". If one of these characters appears, then the word is regarded as a *PATTERN*, and replaced with an alphabetically sorted list of file names matching the pattern.
+
+### Bash options
+
+We can use `-o` option to **set** to display all shell options:
+
+```
+japin@localhost:~/bash-guide $ set -o
+allexport       off
+braceexpand     on
+emacs           on
+errexit         off
+errtrace        off
+functrace       off
+hashall         on
+histexpand      on
+history         on
+ignoreeof       off
+interactive-comments    on
+keyword         off
+monitor         on
+noclobber       off
+noexec          off
+noglob          off
+nolog           off
+notify          off
+nounset         off
+onecmd          off
+physical        off
+pipefail        off
+posix           off
+privileged      off
+verbose         off
+vi              off
+xtrace          off
+```
+
+A lot of options have one-character shorthands: the `xtrace` option, for instance, is equal to specifying **set -x**.
+
+For changing the current environment temporarily, or for use in a script, we would rather use **set**. Use `-` (dash) for enabling an option, `+` for disabling.
