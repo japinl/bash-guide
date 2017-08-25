@@ -152,3 +152,59 @@ ls -l /etc | awk 'BEGIN { print "Files found:\n" } /\<(a|x).*\.conf$/ { print $9
 ```
 
 As commands tend to get a little longer, you might want to put them in a script, so they are reusable. An **awk** script contains **awk** statements defining patterns and actions.
+
+### Gawk variables
+
+As **awk** is processing the input file, it uses several variables. Some are editable, some are read-only.
+
+The *field separator*, which is either a single character or a regular expression, controls the way **awk** splits up an input record into fields. The field separator is represented by the built-in variable FS. The value of the field separator variable can be changed in the **awk** program with the assignment operator **=**. Often the right time to do this is at the beginning of execution before any input has been processed. To do this, use the special **BEGIN** pattern. For example:
+
+```
+awk 'BEGIN { FS=":" } { print $1 "\t" $5 }' /etc/passwd
+```
+
+Fields are normally separated by spaces in the output. This becomes apparent when you use the correct syntax for the **print** command, where arguments are separated by commas:
+
+```
+awk -F ":" '{print $1 $5}' /etc/passwd
+awk -F ":" '{print $1, $5}' /etc/passwd
+```
+
+The first command will not separated by spaces, while the second will separated by spaces. So, if you don't put in the commas, **print** will treat the items to output as one argument, thus omitting the use of the default *output separator*, OFS. Any character string may be used as the output field separator by setting this built-in variable.
+
+The output from an entire **print** statement is called an *output record*. Each **print** command results in one output record, and then outputs a string called the *output record separator*, ORS. The default value for this variable is "\n", a newline character. To change the way output fields and records are separated, assign new values to OFS and ORS:
+
+```
+awk -F ":" 'BEGIN { OFS="|"; ORS="\n---->\n" } {print $1,$2}' /etc/passwd
+```
+
+The built-in NR holds the number of records that are processed. It is incremented after reading a new input line. You can use it at the end to count the total number of records, or in each output record:
+
+```
+awk -F ":" 'BEGIN { OFS="|"; ORS="\n---->\n" } {print "Record #" NR ": " $1,$2} END { print "Total: " NR }' /etc/passwd
+```
+
+Apart from the built-in variables, you can define your own. When **awk** encounters a reference to a variable which does not exist (which is not predefined), the variable is created and initialized to a null string. For all subsequent references, the value of the variable is whatever value was assigned last. Variables can be a string or a numeric value.
+
+Values can be assigned directly using the **=** operator, or you can use the current value of the variable in combination with other operators:
+
+```
+japin@localhost:~/bash-guide$ cat revenues
+20021009 20021013 consultancy BigComp     2500
+20021015 20021020 training    EduComp     2000
+20021112 20021123 appdev      SmartComp   10000
+20021204 20021215 training    EduComp     5000
+japin@localhost:~/bash-guide$ cat total.awk
+{ total=total + $5 }
+{ print "Send bill for " $5 " dollar to " $4 }
+END { print "----------------------------------------------\nTotal revenue: " total }
+japin@localhost:~/bash-guide$ awk -f total.awk revenues
+Send bill for 2500 dollar to BigComp
+Send bill for 2000 dollar to EduComp
+Send bill for 10000 dollar to SmartComp
+Send bill for 5000 dollar to EduComp
+----------------------------------------------
+Total revenue: 19500
+```
+
+C-like shorthands like `VAR+=value` are also accepted.
