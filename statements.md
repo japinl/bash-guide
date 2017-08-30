@@ -55,3 +55,74 @@ Expressions may be combined using the following operators, listed in decreasing 
  [ ( EXPR ) ]      | Returns the value of *EXPR*. This may be used to override the normal precedence of operators.
  [ EXPR1 -a EXPR2 ] | True if both *EXPR1* and *EXPR2* are ture.
  [ EXPR1 -o EXPR2 ] | True if either *EXPR1* or *EXPR2* is ture.
+
+The **CONSEQUENT-COMMANDS** list that follows the **then** statement can be any valid UNIX command, any executable program, any executable shell script or any shell statement, with the exception of the closing **fi**.
+
+**NOTE:** Contray to *[*, *[[* prevents word splitting of variable values. So, if `VAR="var with spaces"`, you do not need to double quote `$VAR` in a test - eventhough using quotes remains a good habit. Also, *[[* prevents pathname expansion, so literal strings with wildcards do not try to expand to filenames. Using *[[*, *==* and *!=* interpret strings to the right as shell glob patterns to be matched against the value to the left, for instance: `[[ "value" == val* ]]`.
+
+There are more advanced **if** usage.
+
+```
+if TEST-COMMANDS; then
+    CONSEQUENT-COMMANDS;
+else
+    ALTERNATE-CONSEQUENT-COMMANDS;
+fi
+```
+
+Like the **CONSEQUENT-COMMANDS** list following the **then** statement, the **ALTERNATE-CONSEQUENT-COMMANDS** list following the **else** statement can hold any UNIX-style command that return an exit status.
+
+This is the full form of the **if** statement:
+
+```
+if TEST-COMMANDS; then
+    CONSEQUENT-COMMANDS;
+elif MORE-TEST-COMMANDS; then
+    MORE-CONSEQUENT-COMMANDS;
+else
+    ALTERNATE-CONSEQUENT-COMMANDS;
+fi
+```
+The **TEST-COMMANDS** list is executed, and if its return status is zero, the **CONSEQUENT-COMMANDS** list is executed. if **TEST-COMMANDS** returns a non-zero status, each **elif** list is executed in turn, and if its exit status is zero, the corresponding **MORE-CONSEQUENT-COMMANDS** is executed and the command completes. if **else** is followed by an **ALTERNATE-CONSEQUENT-COMMANDS** list, and the final command in the final **if** or **elif** clause has a non-zero exit status, then **ALTERNATE-CONSEQUENT-COMMANDS** is executed. The return status is the exit status of the last command executed, or zero if no condition tested true.
+
+Inside the **if** statement, you can use another **if** statement. You may use as many levels of nested **if**s as you can logically manage.
+
+For example:
+
+```
+japin@localhost:~/bash-guide$ cat testleap.sh
+#!/bin/bash
+# This script will test if we're in a leap year or not.
+
+year=`date +%Y`
+
+if [ $[$year % 400] -eq "0" ]; then
+    echo "This is a leap year. February has 29 days."
+elif [ $[$year % 4] -eq "0" ]; then
+    if [ $[$year % 100] -ne "0" ]; then
+        echo "This is a leap year. February has 29 days."
+    else
+        echo "This is not a leap year. February has 28 days."
+    fi
+else
+    echo "This is not a leap year. February has 28 days."
+fi
+```
+
+The above script can be shortend using the *Boolean operators* "AND" (&&) and "OR" (||).
+
+
+```
+japin@localhost:~/bash-guide$ cat leaptest.sh
+#!/bin/bash
+# This script will test if we're in a leap year or not.
+
+year=`date +%Y`
+if (( ("$year" % 400) == "0" )) || (( ("$year" % 4 == "0") && ("$year" % 100 != "0") )); then
+    echo "This is a leap year. Don't forget to charge the extra day!"
+else
+    echo "This is not a leap year."
+fi
+```
+
+We use the double brackets for testing an arithmetic expression. This is equivalent to the **let** statement.
