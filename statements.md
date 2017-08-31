@@ -126,3 +126,39 @@ fi
 ```
 
 We use the double brackets for testing an arithmetic expression. This is equivalent to the **let** statement.
+
+For the more complex conditionals, use the **case** syntax:
+
+```
+case EXPRESSION in
+CASE1)
+    COMMAND-LIST;;
+CASE2)
+    COMMAND-LIST;;
+...
+CASEN)
+    COMMAND-LIST;;
+esac
+```
+
+Each case is an expression matching a pattern. The commands in the **COMMAND-LIST** for the first match are executed. The "|" symbol is used for separating multiple patterns, and the ")" operator terminates a pattern list. Each case plus its according commands are called a *clause*. Each clause must be terminated with ";;". Each **case** statement is ended with the **esac** statement.
+
+Simple example as follows:
+
+```
+case "$1" in
+    start)
+        do_start
+        ;;
+    stop)
+        do_stop
+        ;;
+    restart
+        stop
+        start
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+```
