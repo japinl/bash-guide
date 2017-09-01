@@ -122,3 +122,16 @@ Escape sequences used by the echo command
  \0NNN    | The eight-bit character whose value is the octal value NNN (zero to three octal digits).
  \NNN     | The eight-bit character whose value is the octal value NNN (one to three octal digits).
  \xHH     | The eight-bit character whose value is the hexadecimal value (one or two hexadecimal digits).
+
+
+## Catching user input
+
+The **read** built-in command is the counterpart of the **echo** and **printf** commands. The syntax of the **read** command is as follows:
+
+```
+read [options] NAME1 NAME2 ... NAMEN
+```
+
+One line is read from the standard input, or from the file descriptor supplied as an argument to *-u* option. The first word of the line is assigned to the first name, **NAME1**, the second word to the second name, and so on, with leftover words and their intervening separators assigned to the last name, **NAMEN**. If there are fewer words read from the input stream than there are names, the remaining names are assigned empty values.
+
+If no names are supplied, the line read is assigned to the variable **REPLY**. The return code of the **read** command is zero, unless an end-of-file character is encountered, if **read** times out or if an invalid file descriptor is supplied as the argument to the *-u* option.
