@@ -135,3 +135,17 @@ read [options] NAME1 NAME2 ... NAMEN
 One line is read from the standard input, or from the file descriptor supplied as an argument to *-u* option. The first word of the line is assigned to the first name, **NAME1**, the second word to the second name, and so on, with leftover words and their intervening separators assigned to the last name, **NAMEN**. If there are fewer words read from the input stream than there are names, the remaining names are assigned empty values.
 
 If no names are supplied, the line read is assigned to the variable **REPLY**. The return code of the **read** command is zero, unless an end-of-file character is encountered, if **read** times out or if an invalid file descriptor is supplied as the argument to the *-u* option.
+
+The following options are supported by the Bash **read** built-in:
+
+ Option        | Meaning
+:--------------|:---------------
+ -a ANAME      | The words are assigned to sequential indexes of the array variable **ANAME**, starting at 0. All elements are removed from **ANAME** before the assignment. Other **NAME** arguments are ignored.
+ -d DELIM      | The first character of **DELIM** is used to terminate the input line, rather than newline.
+ -e            | **readline** is used to obtain the line.
+ -n NCHARS     | **read** returns after reading **NCHARS** characters rather than waiting for a complete line of input.
+ -p PROMPT     | Display **PROMPT**, without a trailing newline, before attempting to read any input. The prompt is displayed only if input is coming from a terminal.
+ -r            | If this option is given, backslash does not act as an escape character. The backslash is considered to be part of the line. In particular, a backslash-newline pair may not be used as a line continuation.
+ -s            | Silent mode. If input is coming from a termianl, characters are not echoed.
+ -t TIMEOUT    | Cause **read** to time out and return failure if a complete line of input is not read within **TIMEOUT** seconds. This option has no effect if **read** is not reading input from the terminal or from a pipe.
+ -u FD         | Read input from file descriptor **FD**.
