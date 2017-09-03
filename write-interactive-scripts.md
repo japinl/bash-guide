@@ -149,3 +149,22 @@ The following options are supported by the Bash **read** built-in:
  -s            | Silent mode. If input is coming from a termianl, characters are not echoed.
  -t TIMEOUT    | Cause **read** to time out and return failure if a complete line of input is not read within **TIMEOUT** seconds. This option has no effect if **read** is not reading input from the terminal or from a pipe.
  -u FD         | Read input from file descriptor **FD**.
+
+## Redirection and file descriptors
+
+As you know from basic shell usage, input and output of a command may be redirected before it is executed, using a special notation - the redirection operators - interpreted by the shell. Redirection may also be used to open and close files for the current shell execution environment.
+
+File input and output are accomplished by integer handles that track all open files for a given process. These numeric values are known as file descriptors. The best known file descriptors are *stdin*, *stout* and *stderr*, with file descriptor numbers 0, 1 and 2, respectively.
+
+The output below shows how the reserved file descriptors point to actual devices:
+
+```
+japin@localhost:~/bash-guide$ ls -l /dev/std*
+lrwxrwxrwx 1 root root 15 Sep  3 10:21 /dev/stderr -> /proc/self/fd/2
+lrwxrwxrwx 1 root root 15 Sep  3 10:21 /dev/stdin -> /proc/self/fd/0
+lrwxrwxrwx 1 root root 15 Sep  3 10:21 /dev/stdout -> /proc/self/fd/1
+japin@localhost:~/bash-guide$ ls -l /proc/self/fd/[0-2]
+lrwx------ 1 japin japin 64 Sep  3 19:51 /proc/self/fd/0 -> /dev/pts/0
+lrwx------ 1 japin japin 64 Sep  3 19:51 /proc/self/fd/1 -> /dev/pts/0
+lrwx------ 1 japin japin 64 Sep  3 19:51 /proc/self/fd/2 -> /dev/pts/0
+```
